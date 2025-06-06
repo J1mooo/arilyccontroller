@@ -1,0 +1,30 @@
+name: Docker Test Image CI
+
+on:
+  push:
+    branches: [ "ts-rewrite" ]
+  pull_request:
+    branches: [ "ts-rewrite" ]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build Docker image
+      run: |
+        docker build -t ghcr.io/j1mooo/arilyccontroller -f Dockerfile .
+
+    - name: Publish Docker image (push events only)
+      if: ${{ github.event_name == 'push' }}
+      run: |
+        echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        docker push ghcr.io/j1mooo/arilyccontroller
