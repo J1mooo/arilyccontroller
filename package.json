@@ -1,5 +1,5 @@
 {
-  "name": "arilyccontroller",
+  "name": "aryliccontroller",
   "version": "1.0.0",
   "main": "src/app.ts",
   "scripts": {
@@ -13,19 +13,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/J1mooo/arilyccontroller.git"
+    "url": "git+https://github.com/J1mooo/aryliccontroller.git"
   },
   "keywords": [
-    "arilyc",
+    "arylic",
     "controller",
-    "opensoure"
+    "opensource"
   ],
   "author": "STAFi",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/J1mooo/arilyccontroller/issues"
+    "url": "https://github.com/J1mooo/aryliccontroller/issues"
   },
-  "homepage": "https://github.com/J1mooo/arilyccontroller#readme",
+  "homepage": "https://github.com/J1mooo/aryliccontroller#readme",
   "description": "",
   "dependencies": {
     "ejs": "^3.1.10",

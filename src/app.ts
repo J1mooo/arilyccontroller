@@ -1,5 +1,6 @@
 import express from 'express'
 import path from 'path'
+import { baseRouter } from './routes/baserouter'
 
 
 const app = express()
@@ -36,6 +37,8 @@ function reqLogger(req, res, next) {
 }
 
 app.use((req, res, next) => reqLogger(req, res, next));
+
+app.use('/', baseRouter)
 
 app.use((req, res, next) => {
     //404
