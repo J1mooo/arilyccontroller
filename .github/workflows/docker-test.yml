@@ -2,9 +2,9 @@ name: Docker Test Image CI
 
 on:
   push:
-    branches: [ "ts-rewrite" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "ts-rewrite" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -21,10 +21,10 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ghcr.io/j1mooo/arilyccontroller -f Dockerfile .
+        docker build -t ghcr.io/j1mooo/aryliccontroller -f Dockerfile .
 
     - name: Publish Docker image (push events only)
       if: ${{ github.event_name == 'push' }}
       run: |
         echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        docker push ghcr.io/j1mooo/arilyccontroller
+        docker push ghcr.io/j1mooo/aryliccontroller

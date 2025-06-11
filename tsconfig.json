@@ -1,29 +1,7 @@
 {
-    "compilerOptions": {
-      /* Base Options: */
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "target": "es2022",
-      "allowJs": true,
-      "isolatedModules": true,
-      "moduleResolution": "nodenext",
-      "strictNullChecks": true,
-      /* "rootDir": "./src", */
-  
-      /* Strictness
-      "strict": true,
-      "noUncheckedIndexedAccess": true,
-      "noImplicitOverride": true, */
-  
-      /* If transpiling with TypeScript: */
-      "module": "NodeNext",
-      "outDir": "dist",
-      "sourceMap": true
-    },
-    "exclude": [
-      "drizzle.config.ts"
-    ],
-    "include": [
-      "src/"
-    ]
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }
