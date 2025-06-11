@@ -1,13 +1,261 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Arylic UP2Stream Amp Controller</title>
+        <link rel="stylesheet" href="style.css" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <div id="root">
+            <div class="container">
+                <header class="app-header">
+                    <h1>Arylic UP2Stream Amp Controller</h1>
+                    <div class="connection-status" id="connectionStatus">
+                        <span class="status status--error" id="statusIndicator"
+                            >Disconnected</span
+                        >
+                    </div>
+                </header>
+
+                <!-- Device Configuration Section -->
+                <section class="card device-config">
+                    <div class="card__body">
+                        <h2>Device Configuration</h2>
+                        <div class="form-group">
+                            <label class="form-label" for="deviceIP"
+                                >Device IP Address</label
+                            >
+                            <div class="ip-input-group">
+                                <input
+                                    type="text"
+                                    id="deviceIP"
+                                    class="form-control"
+                                    placeholder="192.168.1.100"
+                                    pattern="^(\d{1,3}\.){3}\d{1,3}$"
+                                />
+                                <button
+                                    class="btn btn--primary"
+                                    id="connectBtn"
+                                >
+                                    <span class="material-icons">wifi</span>
+                                    Connect
+                                </button>
+                            </div>
+                            <small class="form-help"
+                                >Enter the IP address of your Arylic
+                                device</small
+                            >
+                        </div>
+
+                        <div
+                            class="device-info"
+                            id="deviceInfo"
+                            style="display: none"
+                        >
+                            <h3>Device Information</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Device Name:</span>
+                                    <span class="info-value" id="deviceName"
+                                        >-</span
+                                    >
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Firmware:</span>
+                                    <span class="info-value" id="firmware"
+                                        >-</span
+                                    >
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">MAC Address:</span>
+                                    <span class="info-value" id="macAddress"
+                                        >-</span
+                                    >
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Internet:</span>
+                                    <span class="info-value" id="internetStatus"
+                                        >-</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Playback Controls Section -->
+                <section
+                    class="card playback-controls"
+                    id="playbackSection"
+                    style="display: none"
+                >
+                    <div class="card__body">
+                        <h2>Playback Control</h2>
+
+                        <div class="track-info">
+                            <div class="track-details">
+                                <h3 class="track-title" id="trackTitle">
+                                    No track loaded
+                                </h3>
+                                <p class="track-artist" id="trackArtist">-</p>
+                                <p class="track-album" id="trackAlbum">-</p>
+                            </div>
+                            <div class="playback-status">
+                                <span
+                                    class="status status--info"
+                                    id="playbackStatus"
+                                    >Stopped</span
+                                >
+                            </div>
+                        </div>
+
+                        <div class="progress-section">
+                            <div class="progress-bar">
+                                <div
+                                    class="progress-fill"
+                                    id="progressFill"
+                                ></div>
+                            </div>
+                            <div class="time-display">
+                                <span id="currentTime">00:00</span>
+                                <span id="totalTime">00:00</span>
+                            </div>
+                        </div>
+
+                        <div class="control-buttons">
+                            <button
+                                class="btn btn--secondary control-btn"
+                                id="prevBtn"
+                            >
+                                <span class="material-icons"
+                                    >skip_previous</span
+                                >
+                            </button>
+                            <button
+                                class="btn btn--primary control-btn play-pause-btn"
+                                id="playPauseBtn"
+                            >
+                                <span class="material-icons" id="playPauseIcon"
+                                    >play_arrow</span
+                                >
+                            </button>
+                            <button
+                                class="btn btn--secondary control-btn"
+                                id="nextBtn"
+                            >
+                                <span class="material-icons">skip_next</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Volume Control Section -->
+                <section
+                    class="card volume-control"
+                    id="volumeSection"
+                    style="display: none"
+                >
+                    <div class="card__body">
+                        <h2>Volume Control</h2>
+
+                        <div class="volume-section">
+                            <button
+                                class="btn btn--secondary volume-btn"
+                                id="muteBtn"
+                            >
+                                <span class="material-icons" id="muteIcon"
+                                    >volume_up</span
+                                >
+                            </button>
+
+                            <div class="volume-slider-container">
+                                <input
+                                    type="range"
+                                    id="volumeSlider"
+                                    class="volume-slider"
+                                    min="0"
+                                    max="100"
+                                    value="50"
+                                />
+                                <div class="volume-value" id="volumeValue">
+                                    50
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Input Source Selection -->
+                <section
+                    class="card input-source"
+                    id="inputSection"
+                    style="display: none"
+                >
+                    <div class="card__body">
+                        <h2>Input Source</h2>
+
+                        <div class="form-group">
+                            <label class="form-label" for="inputSelect"
+                                >Select Input Source</label
+                            >
+                            <select id="inputSelect" class="form-control">
+                                <option value="wifi">WiFi Mode</option>
+                                <option value="line-in">Line Input</option>
+                                <option value="bluetooth">Bluetooth</option>
+                                <option value="optical">Optical Input</option>
+                                <option value="co-axial">Coaxial Input</option>
+                                <option value="udisk">USB Disk</option>
+                            </select>
+                        </div>
+
+                        <div class="current-input">
+                            <span class="info-label">Current Mode:</span>
+                            <span class="status status--info" id="currentMode"
+                                >-</span
+                            >
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Loading Overlay -->
+                <div
+                    class="loading-overlay"
+                    id="loadingOverlay"
+                    style="display: none"
+                >
+                    <div class="loading-spinner"></div>
+                    <p>Connecting to device...</p>
+                </div>
+
+                <!-- Error Messages -->
+                <div
+                    class="error-container"
+                    id="errorContainer"
+                    style="display: none"
+                >
+                    <div class="error-message">
+                        <span class="material-icons">error</span>
+                        <span id="errorText">An error occurred</span>
+                        <button
+                            class="btn btn--sm btn--secondary"
+                            id="dismissError"
+                        >
+                            Dismiss
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
 </html>
