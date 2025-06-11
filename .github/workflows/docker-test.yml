@@ -21,7 +21,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ghcr.io/j1mooo/aryliccontroller -f Dockerfile .
+        docker build -t ghcr.io/j1mooo/aryliccontroller -f Dockerfile.prod .
 
     - name: Publish Docker image (push events only)
       if: ${{ github.event_name == 'push' }}
