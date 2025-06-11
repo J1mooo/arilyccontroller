@@ -35,7 +35,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
   );
 
   const handleVolumeChange = useCallback(
-    (event: Event, newValue: number | number[]) => {
+    (_: Event, newValue: number | number[]) => {
       const volumeValue = Array.isArray(newValue) ? newValue[0] : newValue;
       setLocalVolume(volumeValue);
       debouncedVolumeChange(volumeValue);
@@ -44,7 +44,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
   );
 
   const handleVolumeCommitted = useCallback(
-    (event: React.SyntheticEvent | Event, newValue: number | number[]) => {
+    (_: React.SyntheticEvent | Event, newValue: number | number[]) => {
       const volumeValue = Array.isArray(newValue) ? newValue[0] : newValue;
       onVolumeChange(volumeValue);
     },

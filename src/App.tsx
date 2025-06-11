@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import { 
   PlayerStatusResponse, 
-  DeviceStatusResponse, 
   DeviceState, 
   PlayerState, 
   InputSource,
@@ -224,7 +223,7 @@ export const ArylicControllerApp: React.FC = () => {
         isConnected: true,
         isLoading: false,
         error: null,
-        deviceInfo: deviceResponse.data,
+        deviceInfo: deviceResponse.data ?? null,
         lastUpdated: new Date(),
       }));
 

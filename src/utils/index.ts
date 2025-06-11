@@ -1,4 +1,4 @@
-import { ValidationResult, IPAddressValidation, LocalStorageData } from '../types';
+import { IPAddressValidation, LocalStorageData } from '../types';
 
 /**
  * Convert hexadecimal string to ASCII text
