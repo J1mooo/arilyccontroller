@@ -97,4 +97,8 @@ export class ArylicApiClient {
   async stopPlayback(): Promise<ApiResponse<string>> {
     return this.makeRequest<string>('/httpapi.asp?command=setPlayerCmd:stop');
   }
+
+  async joinMultiroomGroup(slaveIp: string): Promise<ApiResponse<string>> {
+    return this.makeRequest<string>(`httpapi.asp?command=ConnectMasterAp:JoinGroupMaster:eth${slaveIp}:wifi0.0.0.0`);
+  }
 }
