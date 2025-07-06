@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -25,6 +25,14 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
   disabled = false,
 }) => {
   const [localVolume, setLocalVolume] = useState<number>(volume);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+
+  // Sync external volume changes to local state
+  useEffect(() => {
+    if (!isDragging) {
+      setLocalVolume(volume);
+    }
+  }, [volume, isDragging]);
 
   // Debounced volume change to avoid too many API calls
   const debouncedVolumeChange = useCallback(
@@ -38,6 +46,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
     (_: Event, newValue: number | number[]) => {
       const volumeValue = Array.isArray(newValue) ? newValue[0] : newValue;
       setLocalVolume(volumeValue);
+      setIsDragging(true);
       debouncedVolumeChange(volumeValue);
     },
     [debouncedVolumeChange]
@@ -46,6 +55,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
   const handleVolumeCommitted = useCallback(
     (_: React.SyntheticEvent | Event, newValue: number | number[]) => {
       const volumeValue = Array.isArray(newValue) ? newValue[0] : newValue;
+      setIsDragging(false);
       onVolumeChange(volumeValue);
     },
     [onVolumeChange]
@@ -81,6 +91,7 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
 
           <Box sx={{ flex: 1, mx: 2 }}>
             <Slider
+              key={`volume-${volume}`}  // Force re-render on external changes
               value={displayVolume}
               onChange={handleVolumeChange}
               onChangeCommitted={handleVolumeCommitted}

@@ -66,7 +66,7 @@ const defaultConfig: AppConfig = {
     { value: 'co-axial', label: 'Coaxial Input' },
     { value: 'udisk', label: 'USB Disk' },
   ],
-  pollingInterval: 3000,
+  pollingInterval: 1000,
   volumeRange: { min: 0, max: 100 },
   localStorageKey: 'arylic_device_ip',
   requestTimeout: 5000,
@@ -97,7 +97,6 @@ export const ArylicControllerApp: React.FC = () => {
   });
 
   const [apiClient, setApiClient] = useState<ArylicApiClient | null>(null);
-  const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'warning' | 'info'>('info');
@@ -109,15 +108,6 @@ export const ArylicControllerApp: React.FC = () => {
       setDeviceState(prev => ({ ...prev, ipAddress: storedIP }));
     }
   }, []);
-
-  // Cleanup polling on unmount
-  useEffect(() => {
-    return () => {
-      if (pollingInterval) {
-        clearInterval(pollingInterval);
-      }
-    };
-  }, [pollingInterval]);
 
   // Show snackbar message
   const showMessage = useCallback((message: string, severity: 'success' | 'error' | 'warning' | 'info' = 'info') => {
@@ -148,6 +138,23 @@ export const ArylicControllerApp: React.FC = () => {
     }));
   }, []);
 
+  useEffect(() => {
+    if (!apiClient || !deviceState.isConnected) {
+      return;
+    }
+
+    // Start polling immediately
+    pollDeviceStatus();
+    
+    // Set up interval
+    const intervalId = setInterval(pollDeviceStatus, defaultConfig.pollingInterval);
+    
+    // Cleanup function
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [apiClient, deviceState.isConnected, updatePlayerState]);
+
   // Poll device status
   const pollDeviceStatus = useCallback(async () => {
     if (!apiClient || !deviceState.isConnected) return;
@@ -172,24 +179,6 @@ export const ArylicControllerApp: React.FC = () => {
       }
     }
   }, [apiClient, deviceState.isConnected, updatePlayerState]);
-
-  // Start polling
-  const startPolling = useCallback(() => {
-    if (pollingInterval) {
-      clearInterval(pollingInterval);
-    }
-    
-    const interval = setInterval(pollDeviceStatus, defaultConfig.pollingInterval);
-    setPollingInterval(interval);
-  }, [pollDeviceStatus, pollingInterval]);
-
-  // Stop polling
-  const stopPolling = useCallback(() => {
-    if (pollingInterval) {
-      clearInterval(pollingInterval);
-      setPollingInterval(null);
-    }
-  }, [pollingInterval]);
 
   // Connect to device
   const handleConnect = useCallback(async (ipAddress: string) => {
@@ -230,9 +219,6 @@ export const ArylicControllerApp: React.FC = () => {
       // Store IP address
       setStoredDeviceIP(ipAddress);
       
-      // Start polling
-      startPolling();
-      
       showMessage('Successfully connected to device', 'success');
     } catch (error) {
       console.error('Connection error:', error);
@@ -243,11 +229,10 @@ export const ArylicControllerApp: React.FC = () => {
       }));
       showMessage('Failed to connect to device', 'error');
     }
-  }, [updatePlayerState, startPolling, showMessage]);
+  }, [updatePlayerState, showMessage]);
 
   // Disconnect from device
   const handleDisconnect = useCallback(() => {
-    stopPolling();
     setApiClient(null);
     setDeviceState(prev => ({
       ...prev,
@@ -262,7 +247,7 @@ export const ArylicControllerApp: React.FC = () => {
       isLoading: false,
     }));
     showMessage('Disconnected from device', 'info');
-  }, [stopPolling, showMessage]);
+  }, [showMessage]);
 
   // Play/Pause control
   const handlePlayPause = useCallback(async () => {
