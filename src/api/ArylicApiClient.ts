@@ -24,10 +24,6 @@ export class ArylicApiClient {
     try {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         signal: controller.signal,
-        mode: 'cors',
-        headers: {
-          'Accept': 'application/json',
-        },
       });
 
       clearTimeout(timeoutId);
@@ -36,7 +32,13 @@ export class ArylicApiClient {
         throw new NetworkError(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      const data = await response.json();
+      var data;
+      const respbody = await response.text()
+      if (respbody == "OK") {
+        data = "OK";
+      } else {
+        data = JSON.parse(respbody);
+      } 
       
       return {
         data,
